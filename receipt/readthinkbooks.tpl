@@ -1,10 +1,10 @@
 {% extends parameters.print ? "printbase" : "base" %}
 {% block extrastyles %}
 body {
-  margin: 0;
+  margin: 0px;
   padding: 0;
 }
-@page {	margin: 0: }
+@page {	margin: 0px: }
 .store { page-break-after: always; }
 .receipt {
 	font: normal 10pt 'Helvetica Neue',Helvetica,Arial,sans-serif;
@@ -163,7 +163,7 @@ body {
 	{% if Sale.Shop.ReceiptSetup.generalMsg|strlen > 0 %}<p class="note">{{ Sale.Shop.ReceiptSetup.generalMsg|noteformat|raw }}</p>{% endif %}
 
 	{% if not parameters.gift_receipt %}
-	<p class="thankyou">Thank You {% if Sale.Customer %}{{Sale.Customer.firstName}} {{Sale.Customer.lastName}}{% endif %}!</p>
+	<p class="thankyou">Thank You {% if Sale.Customer %}{{Sale.Customer.firstName}}{% endif %}!</p>
 	{% endif %}
 
 	<img height="50" width="250" class="barcode" src="/barcode.php?type=receipt&number={{Sale.ticketNumber}}">
@@ -229,18 +229,6 @@ body {
 	Ticket: {{Sale.ticketNumber}}<br />
 	{% if Sale.Register %}Register: {{Sale.Register.name}}<br />{% endif %}
 	{% if Sale.Employee %}Employee: {{Sale.Employee.firstName}} {{Sale.Employee.lastName}}<br />{% endif %}
-	{% if Sale.Customer %}
-		{% if Sale.Customer.company%}Company: {{Sale.Customer.company}}<br />{% endif %}
-		Customer: {{Sale.Customer.firstName}} {{Sale.Customer.lastName}}<br />
-		<span class="indent">
-		{% for Phone in Sale.Customer.Contact.Phones.ContactPhone %}
-		{{Phone.useType}}: {{Phone.number}}<br />
-		{% endfor %}
-		{% for Email in Sale.Customer.Contact.Emails.ContactEmail %}
-		Email: {{Email.address}} ({{Email.useType}})<br />
-		{% endfor %}
-		</span>
-	{% endif %}
 </p>
 {% endmacro %}
 
@@ -289,7 +277,7 @@ body {
 		<h2>Payments</h2>
 		<table class="payments">
 			{% for Payment in Sale.SalePayments.SalePayment %}
-				{% if Payment.isCurrentCash != 'true' %}
+				{% if Payment.PaymentType.name != 'Cash' %}
 					<!-- NOT Cash Payment -->
 					{% if Payment.CreditAccount.giftCard == 'true' %}
 						<!--  Gift Card -->
@@ -420,7 +408,7 @@ body {
 	<p>{{Sale.Shop.ReceiptSetup.workorderAgree|noteformat|raw}}</p>
 	<dl class="signature">
 		<dt>Signature:</dt>
-		<dd>{{Sale.Customer.firstName}} {{Sale.Customer.lastName}}</dd>
+		<dd>{{Sale.Customer.firstName}}</dd>
 	</dl>
 </div>
 	{% endif %}
